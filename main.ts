@@ -1,6 +1,8 @@
 import { app, BrowserWindow, screen } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+const { autoUpdater } = require("electron-updater");
+const log = require('electron-log');
 
 // Initialize remote module
 require('@electron/remote/main').initialize();
@@ -57,11 +59,40 @@ function createWindow(): BrowserWindow {
 }
 
 try {
+  /* Updater ======================================================*/
+  autoUpdater.on('checking-for-update', () => {
+    log.info('업데이트 확인 중...');
+  });
+  autoUpdater.on('update-available', (info) => {
+    log.info('업데이트가 가능합니다.');
+  });
+  autoUpdater.on('update-not-available', (info) => {
+    log.info('현재 최신버전입니다.');
+  });
+  autoUpdater.on('error', (err) => {
+    log.info('에러가 발생하였습니다. 에러내용 : ' + err);
+  });
+  autoUpdater.on('download-progress', (progressObj) => {
+    let log_message = "다운로드 속도: " + progressObj.bytesPerSecond;
+    log_message = log_message + ' - 현재 ' + progressObj.percent + '%';
+    log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+    log.info(log_message);
+  })
+  autoUpdater.on('update-downloaded', (info) => {
+    log.info('업데이트가 완료되었습니다.');
+  });
+  /* Electron =====================================================*/
+
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
   // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
-  app.on('ready', () => setTimeout(createWindow, 400));
+  app.on('ready', () => {
+    setTimeout(createWindow, 400);
+
+    // 자동 업데이트 등록
+    autoUpdater.checkForUpdates();
+  });
 
   // Quit when all windows are closed.
   app.on('window-all-closed', () => {
@@ -79,7 +110,6 @@ try {
       createWindow();
     }
   });
-
 } catch (e) {
   // Catch Error
   // throw e;
