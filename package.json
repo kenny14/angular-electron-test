@@ -2,11 +2,7 @@
   "name": "angular-electron",
   "version": "1.0.0",
   "description": "Angular 11 with Electron (Typescript + SASS + Hot Reload)",
-  "homepage": "https://github.com/maximegris/angular-electron",
-  "author": {
-    "name": "Maxime GRIS",
-    "email": "maxime.gris@gmail.com"
-  },
+  "homepage": "https://github.com/kenny14/angular-electron-test",
   "keywords": [
     "angular",
     "angular 11",
@@ -21,7 +17,6 @@
     "linux"
   ],
   "main": "main.js",
-  "private": true,
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
     "ng": "ng",
